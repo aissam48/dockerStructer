@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  node:
+    build:
+      context: ./services/node/
+      dockerfile: Dockerfile
+
+    container_name: node_container
+    ports:
+      - "80:80"
+    volumes:
+      - ./volumes/node:/src/app
+    command: [ "npm", "run", "dev" ]
+
+  mariadb:
+    build:
+      context: ./services/mariadb
+      dockerfile: Dockerfile
+
+    container_name: mariadb_container
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=rootpassword
+      - MARIADB_USER=root
+      - MARIADB_PASSWORD=password
+      - MARIADB_DATABASE=demo
+    volumes:
+      - ./volumes/mariadb/sql:/docker-entrypoint-initdb.d
